@@ -796,6 +796,9 @@ export async function runStartupTasks() {
       });
     },
     runStartupMigrations: async () => {
+      if (process.env.KANEO_SKIP_DRIZZLE_MIGRATIONS === "1") {
+        return;
+      }
       await migrateWorkspaceUserEmail();
       await migrateSessionColumn();
 
@@ -807,13 +810,12 @@ export async function runStartupTasks() {
     },
   });
 
-  // After Drizzle migrations: apikey table must exist so we can align columns
-  // with Better Auth (reference_id + nullable user_id).
-  await migrateApiKeyReferenceId();
-
-  await migrateNotificationPreferencesSchema();
-  await migrateGitHubIntegration();
-  await migrateColumns();
+  if (process.env.KANEO_SKIP_DRIZZLE_MIGRATIONS !== "1") {
+    await migrateApiKeyReferenceId();
+    await migrateNotificationPreferencesSchema();
+    await migrateGitHubIntegration();
+    await migrateColumns();
+  }
   await seedDefaultWorkspaceRoles();
 
   initializePlugins();
