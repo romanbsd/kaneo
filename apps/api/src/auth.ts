@@ -198,6 +198,9 @@ export const auth = betterAuth({
   trustedOrigins,
   secret: process.env.AUTH_SECRET || "",
   basePath: "/api/auth",
+  advanced: {
+    cookiePrefix: "crm",
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
