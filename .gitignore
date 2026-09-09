@@ -58,3 +58,4 @@ apps/web/.tanstack/
 
 # TypeScript incremental build state
 *.tsbuildinfo
+.serena/
