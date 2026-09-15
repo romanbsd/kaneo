@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import * as Sentry from "@sentry/node";
-import { nodeProfilingIntegration } from "@sentry/profiling-node";
+
+const require = createRequire(import.meta.url);
 
 function parseSampleRate(value: string | undefined) {
   const n = Number(value);
@@ -25,6 +27,9 @@ function readAppVersion() {
 }
 
 if (process.env.SENTRY_DSN) {
+  const { nodeProfilingIntegration } = require("@sentry/profiling-node") as {
+    nodeProfilingIntegration: () => unknown;
+  };
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     environment:
